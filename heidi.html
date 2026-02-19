@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bestie Lock 💖</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #ff9ec4, #ffcce6);
+    text-align: center;
+}
+
+.phone {
+    max-width: 400px;
+    margin: auto;
+    min-height: 100vh;
+    background: white;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(0,0,0,0.3);
+}
+
+#homeScreen { display: none; }
+#secretSection { display: none; }
+
+.header {
+    background: hotpink;
+    color: white;
+    padding: 15px;
+    font-size: 22px;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 10px;
+    grid-auto-rows: 200px; /* fixed row height */
+}
+
+.gallery img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    cursor: pointer;
+    display: block;
+}
+
+
+#messageBox {
+    display: none;
+    padding: 10px;
+    background: pink;
+    color: white;
+}
+
+/* Memory Game */
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 15px;
+}
+
+.card {
+    background: rgb(5, 245, 225);
+    color: white;
+    font-size: 28px;
+    padding: 20px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+button {
+    padding: 8px 15px;
+    background: rgb(1, 245, 253);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+input {
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid rgb(6, 215, 230);
+}
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+
+<!-- LOCK -->
+<div id="lockScreen">
+    <h2>🔐 Enter Bestie Name</h2>
+    <p>UNSCRAMBLE: <b>AHLIEDXEAI</b></p>
+    <input type="text" id="password">
+    <br>
+    <button onclick="unlock()">Unlock 💖</button>
+    <p id="lockMsg"></p>
+</div>
+
+<!-- HOME -->
+<div id="homeScreen">
+    <div class="header">👯‍♀️ My Baby Alexa 💖</div>
+
+    <audio autoplay loop>
+      <source src="Owl City - Fireflies (Lyrics).mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Photos -->
+    <div class="gallery">
+        <img src="c:\Users\loriel\Downloads\0e24a29b-e15c-46c4-9b92-1a5f73e8fecd.jpg" onclick="showMessage(0)">
+        <img src="c:\Users\loriel\Downloads\90f7402c-6362-47b3-94bc-9c97d8072ffb.jpg" onclick="showMessage(1)">
+        <img src="c:\Users\loriel\Downloads\b713e6f4-aff1-4cce-a61b-8aa1eaf74c37.jpg" onclick="showMessage(2)">
+        <img src="c:\Users\loriel\Downloads\3ac88f6c-cf67-4073-9970-15cbe4553105.jpg" onclick="showMessage(3)">
+        <img src="c:\Users\loriel\Downloads\3ac88f6c-cf67-4073-9970-15cbe4553105.jpg" onclick="showMessage(4)">
+        <img src="c:\Users\loriel\Downloads\bbc7dd02-f863-4ca1-8b99-a303fc0a40f2.jpg" onclick="showMessage(5)">
+    </div>
+
+    <div id="messageBox"></div>
+
+    <h3>🎮 Unlock Secret Message</h3>
+    <p>Match all hearts to reveal it 💕</p>
+
+    <!-- Memory Game -->
+    <div class="game-board" id="board"></div>
+
+    <!-- SECRET MESSAGE -->
+    <div id="secretSection">
+        <h3>💌 Secret Message</h3>
+        <p>You are my forever best friend. No matter what, I will always choose you. Baby 💖👯‍♀️</p>
+    </div>
+</div>
+
+</div>
+
+<script>
+const realName = "heidialexa";
+
+function unlock() {
+    const input = document.getElementById("password").value.toLowerCase();
+    if (input === realName) {
+        document.getElementById("lockScreen").style.display = "none";
+        document.getElementById("homeScreen").style.display = "block";
+        createBoard();
+    } else {
+        document.getElementById("lockMsg").innerHTML = "❌ Wrong name 💕";
+    }
+}
+
+const messages = [
+"💖 You are my sunshine!",
+"👯‍♀️ Forever besties!",
+"🌸 My safe place!",
+"💞 My partner in crime!",
+"✨ We shine together!",
+"💕 Sisters by heart!"
+];
+
+function showMessage(i) {
+    const box = document.getElementById("messageBox");
+    box.style.display = "block";
+    box.innerHTML = messages[i];
+}
+
+/* MEMORY GAME */
+let emojis = ["💖","💖","💕","💕","💗","💗","💘","💘","💝","💝","💓","💓"];
+let firstCard = null;
+let matches = 0;
+
+function createBoard() {
+    emojis.sort(() => 0.5 - Math.random());
+    const board = document.getElementById("board");
+    board.innerHTML = "";
+
+    emojis.forEach((emoji) => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = "❓";
+        card.onclick = function() { flipCard(card, emoji); };
+        board.appendChild(card);
+    });
+}
+
+function flipCard(card, emoji) {
+    if (card.innerHTML !== "❓") return;
+
+    card.innerHTML = emoji;
+
+    if (!firstCard) {
+        firstCard = {card, emoji};
+    } else {
+        if (firstCard.emoji === emoji) {
+            matches++;
+            firstCard = null;
+
+            if (matches === 3) {
+                document.getElementById("secretSection").style.display = "block";
+            }
+        } else {
+            setTimeout(() => {
+                card.innerHTML = "❓";
+                firstCard.card.innerHTML = "❓";
+                firstCard = null;
+            }, 800);
+        }
+    }
+}
+</script>
+
+</body>
+</html>
